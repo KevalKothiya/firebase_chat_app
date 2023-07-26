@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 final box = GetStorage();
 
 class MenuItems {
+  static const home = MenuItem('Home', Icons.home);
   static const profile = MenuItem('My profile', Icons.person_pin);
   static const account = MenuItem('Account', Icons.key);
   static const privacy = MenuItem('Privacy', CupertinoIcons.lock_circle);
@@ -15,6 +16,7 @@ class MenuItems {
   static const logout = MenuItem('Logout', Icons.logout);
 
   static const all = <MenuItem>[
+    home,
     profile,
     account,
     privacy,

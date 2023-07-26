@@ -3,19 +3,23 @@ import 'package:firebase_chat_app/modals/util/utils.dart';
 
 import 'package:flutter/material.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends StatefulWidget {
   final MenuItem currentItem;
   final ValueChanged<MenuItem> onSelectedItem;
 
   const MenuScreen({Key? key, required this.currentItem, required this.onSelectedItem}) : super(key: key);
 
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
 
+class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.indigo,
-      body: SafeArea(
-        child: Container(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Container(
           child:Column(
             children: [
               Spacer(),
@@ -27,15 +31,16 @@ class MenuScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget buildMenuItem(MenuItem item) => ListTileTheme(
     selectedColor: Colors.white,
     child: ListTile(
       selectedTileColor: Colors.black26,
-      selected: currentItem == item,
+      selected: widget.currentItem == item,
       minLeadingWidth: 20,
       leading: Icon(item.icon),
       title: Text(item.title),
-      onTap: () => onSelectedItem(item),
+      onTap: () => widget.onSelectedItem(item),
     ),
   );
 }

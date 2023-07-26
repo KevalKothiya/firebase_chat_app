@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_chat_app/controllers/chat_user_gc.dart';
 import 'package:firebase_chat_app/helper/fcm_messaging_helper.dart';
 import 'package:firebase_chat_app/helper/firebase_auth_helper.dart';
 import 'package:firebase_chat_app/modals/global/chat_user.dart';
 import 'package:firebase_chat_app/modals/global/message_data.dart';
+import 'package:get/get.dart';
 
 class CFSHelper {
   /*CFSH = Cloud FireStore Helper*/
@@ -34,6 +34,7 @@ class CFSHelper {
 
     return userReference.where('id', isEqualTo: auth.uid).snapshots();
   }
+
   Future<bool> userExits() async {
     connectWithCollection();
 
@@ -43,59 +44,88 @@ class CFSHelper {
         .exists;
   }
 
-  Future<void> createUser() async {
+  Future<void> createUser({String? name, String? phoneNumber}) async {
     connectWithCollection();
 
     final chatUser = ChatUser(
       image: auth.photoURL.toString(),
       about: "about",
-      name: auth.displayName.toString(),
+      name: (auth.displayName.isNull) ? name! : auth.displayName.toString(),
       createdAt: FieldValue.serverTimestamp().toString(),
       isOnline: false,
       id: auth.uid,
       lastActive: FieldValue.serverTimestamp().toString(),
       email: auth.email.toString(),
-      phone: auth.phoneNumber.toString(),
+      phone: (auth.phoneNumber.isNull)
+          ? phoneNumber!
+          : auth.phoneNumber.toString(),
       pushToken: FCMHelper.fcmHelper.fetchTokan().toString(),
     );
 
-
     await userReference.doc(auth.uid).set(chatUser.toFirebase());
   }
-  
-  String getConersationID(String id) => (auth.uid.hashCode <= id.hashCode ) ? '${auth.uid}_$id' : '${id}_${auth.uid}';
+
+  String getConersationID(String id) => (auth.uid.hashCode <= id.hashCode)
+      ? '${auth.uid}_$id'
+      : '${id}_${auth.uid}';
 
   Stream<QuerySnapshot> displayAllMessages(Map<String, dynamic> user) {
     connectWithCollection();
-     String id = getConersationID(user['id']);
-    
-    return firestore.collection('chat/${id}/messages/').orderBy("sent", descending: true).snapshots();
-  }
-  
-  
+    String id = getConersationID(user['id']);
 
-  Future<void> sendMessage({required Map<String, dynamic> user, required String msg}) async {
+    return firestore
+        .collection('chat/${id}/messages/')
+        .orderBy("sent", descending: true)
+        .snapshots();
+  }
+
+  Future<void> sendMessage(
+      {required Map<String, dynamic> user, required String msg}) async {
     connectWithCollection();
     String id = getConersationID(user['id']);
-     FieldValue time = FieldValue.serverTimestamp();
-    log("time :${time.toString()}");
-    
+    FieldValue time = FieldValue.serverTimestamp();
+
+    DocumentSnapshot<Map<String, dynamic>> data =
+        await firestore.collection('chatRecode').doc("chat").get();
+
+    Map<String, dynamic> ss = data.data() as Map<String, dynamic>;
+
+    int recodeId = ss['id'];
+
     final ref = firestore.collection('chat/${id}/messages/');
 
     DateTime senderTime = DateTime.now();
 
-    final  message = Message(
+    await firestore.collection("chatRecode").doc("chat").update({"id": ++recodeId});
+
+    final message = Message(
         msg: msg,
+        id: recodeId,
         read: "read",
         fromId: auth.uid,
         toId: user['id'],
         type: Type.text,
-        sent: senderTime.toString()
-    );
+        sent: senderTime.toString());
 
-    await ref.doc(DateTime.now().toString()).set(message.toJson());
+    await ref.doc("${recodeId}").set(message.toJson());
+  }
 
+  Future<void> deletePerticularMessage(
+      {required Map<String, dynamic> user, required String messageId}) async {
+    connectWithCollection();
+    String id = getConersationID(user['id']);
+    await firestore.collection('chat/${id}/messages/').doc(messageId).delete();
+  }
 
-    // await messageReference.doc(auth.uid).set(message.toJson());
+  Future<void> updateDisplayName({required User user, required String name}) async {
+    await user.updateDisplayName(name);
+  }
+
+  Future<void> updateEmail({required User user, required String email}) async {
+    await user.updateEmail(email);
+  }
+
+  Future<void> updatePassword({required User user, required String password}) async {
+    await user.updatePassword(password);
   }
 }

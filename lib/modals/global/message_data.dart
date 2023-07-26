@@ -1,6 +1,7 @@
 class Message {
   Message({
     required this.toId,
+    required this.id,
     required this.msg,
     required this.read,
     required this.type,
@@ -9,6 +10,7 @@ class Message {
   });
 
   late String toId;
+  late int id;
   late String msg;
   late String read;
   late String fromId;
@@ -17,6 +19,7 @@ class Message {
 
   Message.fromJson(Map<String, dynamic> json) {
     toId = json['toId'].toString();
+    id = json['id'];
     msg = json['msg'].toString();
     read = json['read'].toString();
     type = json['type'].toString() == Type.image.name ? Type.image : Type.text;
@@ -27,6 +30,7 @@ class Message {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['toId'] = toId;
+    data['id'] = id;
     data['msg'] = msg;
     data['read'] = read;
     data['type'] = type.name;

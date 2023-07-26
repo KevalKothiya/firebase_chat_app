@@ -28,7 +28,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   loadData() async {
-    CFSHelper.cfsHelper.diplayCurrentUser();
     CFSHelper.cfsHelper.diplayAllRecode();
   }
   @override
@@ -85,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
                             placeholder: (context, url) =>
                                 CircularProgressIndicator(),
                             errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                                Icon(Icons.person),
                           ),
                           title: Text(data[i].data()['name']),
                           subtitle: Text(data[i].data()['id']),

@@ -18,7 +18,7 @@ class User_GetxController extends GetxController {
     required String uid,
     required String displayName,
      String? phoneNumber,
-    required String photoURl,
+     String? photoURl,
      String? about,
     required String token,
   }) {
@@ -27,7 +27,7 @@ class User_GetxController extends GetxController {
     user_model.displayName = displayName;
     user_model.phoneNumber = phoneNumber ?? "+91 9876543210";
     user_model.about = about ?? "Hey!";
-    user_model.photoURl = photoURl;
+    user_model.photoURl = photoURl ?? "";
     user_model.token = token;
 
     box.write('email', user_model.email);

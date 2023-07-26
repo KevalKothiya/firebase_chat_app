@@ -1,3 +1,4 @@
+import 'package:firebase_chat_app/pages/settings/chat_sp.dart';
 import 'package:firebase_chat_app/screens/welcome_page.dart';
 import 'package:firebase_chat_app/screens/chat_page.dart';
 import 'package:firebase_chat_app/screens/home_page.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_chat_app/screens/login_page.dart';
 import 'package:firebase_chat_app/screens/profile_page.dart';
 import 'package:firebase_chat_app/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -18,13 +20,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    ),
-  );
 
   runApp(
     Sizer(
@@ -41,6 +36,7 @@ void main() async {
             GetPage(name: '/profile_page', page: () => ProfilePage()),
             GetPage(name: '/chat_page', page: () => ChatPage()),
             GetPage(name: '/welcome_page', page: () => WelcomePage()),
+            GetPage(name: '/setting_chat_page', page: () => SettingChats()),
           ],
         );
       },

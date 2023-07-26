@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_chat_app/controllers/dark_theme_gc.dart';
 import 'package:firebase_chat_app/controllers/user_data_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +18,10 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   User_GetxController user_getxController = Get.put(User_GetxController());
 
+  DarkMode_GetxController darkController = Get.put(DarkMode_GetxController());
+
   TextEditingController textEditingController = TextEditingController();
+  Color iconColor = Color(0xff3a90df);
 
   @override
   Widget build(BuildContext context) {
@@ -39,45 +43,67 @@ class _ChatPageState extends State<ChatPage> {
           flexibleSpace: flexibleSpace(ss: model),
         ),
         body: Container(
-          padding: EdgeInsets.all(2.h),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: (darkController.darkModeModel.isDarkMode)
+                  ? AssetImage("assets/images/dark_chat_wallpaper.jpg")
+                  : AssetImage("assets/images/light_chat_wallpaper.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Column(
             children: [
               Expanded(
                 child: StreamBuilder(
-                    stream:
-                        CFSHelper.cfsHelper.displayAllMessages(model.data()),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text("Error :${snapshot.error}"),
-                        );
-                      } else if (snapshot.hasData) {
-                        QuerySnapshot<Map<String, dynamic>>? data = snapshot
-                            .data as QuerySnapshot<Map<String, dynamic>>?;
-                        List<QueryDocumentSnapshot<Map<String, dynamic>>> ss =
-                            data!.docs;
-
-                        return (ss.isEmpty)
-                            ? Center(
-                                child: Text("Empty"),
-                              )
-                            : ListView.builder(
-                                itemCount: ss.length,
-                                reverse: true,
-                                itemBuilder: (context, i) {
-                                  return (ss[i].data()['fromId'] ==
-                                          CFSHelper.auth.uid)
-                                      ? me(ss: ss[i].data())
-                                      : you(ss: ss[i].data());
-                                });
-
-                      }
+                  stream: CFSHelper.cfsHelper.displayAllMessages(
+                    model.data(),
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
                       return Center(
-                        child: CircularProgressIndicator(),
+                        child: Text(
+                          "Error :${snapshot.error}",
+                        ),
                       );
-                    }),
+                    } else if (snapshot.hasData) {
+                      QuerySnapshot<Map<String, dynamic>>? data =
+                          snapshot.data as QuerySnapshot<Map<String, dynamic>>?;
+                      List<QueryDocumentSnapshot<Map<String, dynamic>>> ss =
+                          data!.docs;
+                      return (ss.isEmpty)
+                          ? Center(
+                              child: Text("Empty"),
+                            )
+                          : ListView.builder(
+                              itemCount: ss.length,
+                              padding: EdgeInsets.all(2.h),
+                              reverse: true,
+                              itemBuilder: (context, i) {
+                                return (ss[i].data()['fromId'] ==
+                                        CFSHelper.auth.uid)
+                                    ? me(
+                                        ss: ss[i].data(),
+                                        data: model.data(),
+                                        who: true)
+                                    : you(
+                                        ss: ss[i].data(),
+                                        data: model.data(),
+                                        who: false);
+                              },
+                            );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
               ),
-              Row(
+              Container(
+                color: darkController.darkModeModel.isDarkMode
+                    ? Color(0xff171717)
+                    : Color(0xfff6f6f6),
+                padding: EdgeInsets.all(2.h),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -85,6 +111,7 @@ class _ChatPageState extends State<ChatPage> {
                       onPressed: null,
                       icon: Icon(
                         CupertinoIcons.add,
+                        color: iconColor,
                       ),
                     ),
                     Expanded(
@@ -96,7 +123,7 @@ class _ChatPageState extends State<ChatPage> {
                               child: TextFormField(
                                 controller: textEditingController,
                                 decoration: InputDecoration.collapsed(
-                                    hintText: "Types here...",
+                                    hintText: " Types here...",
                                     border: InputBorder.none),
                                 validator: (val) => (val!.isNotEmpty)
                                     ? null
@@ -107,6 +134,7 @@ class _ChatPageState extends State<ChatPage> {
                               onPressed: null,
                               icon: Icon(
                                 CupertinoIcons.photo_on_rectangle,
+                                color: iconColor,
                               ),
                             ),
                           ],
@@ -120,36 +148,43 @@ class _ChatPageState extends State<ChatPage> {
                                 onPressed: () {},
                                 icon: Icon(
                                   Icons.paypal,
+                                  color: iconColor,
                                 ),
                               ),
                               IconButton(
                                 onPressed: () {},
                                 icon: Icon(
                                   Icons.camera,
+                                  color: iconColor,
                                 ),
                               ),
                               IconButton(
                                 onPressed: () {},
                                 icon: Icon(
                                   Icons.keyboard_voice_outlined,
+                                  color: iconColor,
                                 ),
                               ),
                             ],
                           )
                         : CircleAvatar(
                             child: IconButton(
-                            onPressed: () async {
-                              await CFSHelper.cfsHelper.sendMessage(
-                                  user: model.data(),
-                                  msg: textEditingController.text);
+                              onPressed: () async {
+                                await CFSHelper.cfsHelper.sendMessage(
+                                    user: model.data(),
+                                    msg: textEditingController.text);
 
-                              textEditingController.clear();
-                            },
-                            icon: Icon(
-                              Icons.send,
+                                textEditingController.clear();
+                              },
+                              icon: Icon(
+                                Icons.send,
+                                color: iconColor,
+                              ),
                             ),
-                          ))
-                  ]),
+                          ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -206,53 +241,87 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget me({
     required ss,
+    required Map<String, dynamic> data,
+    required bool who,
   }) {
     return Align(
       alignment: Alignment.centerRight,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 13.w,
-        ),
-        child: Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.5.w)),
-          color: Color(0xffdcf8c6),
-          margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 2.6.w,
-                  right: 10.w,
-                  top: 0.7.h,
-                  bottom: 2.2.h,
+      child: GestureDetector(
+        onLongPress: () {
+          Get.dialog(
+            CupertinoAlertDialog(
+              title: Text("Delete Message"),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text("Delete"),
+                  onPressed: () async {
+                    Get.back();
+                    await CFSHelper.cfsHelper.deletePerticularMessage(
+                        user: data, messageId: ss['id'].toString());
+                  },
                 ),
-                child: Text(
-                  ss['msg'],
-                  style: TextStyle(
-                    fontSize: 4.w,
+                CupertinoDialogAction(
+                  child: Text("Cansel"),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width - 13.w,
+          ),
+          child: Card(
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(2.5.w)),
+            color: darkController.darkModeModel.isDarkMode
+                ? Color(0xff0f5348)
+                : Color(0xffdcf8c6),
+            margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 2.6.w,
+                    right: 10.w,
+                    top: 0.7.h,
+                    bottom: 2.2.h,
+                  ),
+                  child: Text(
+                    ss['msg'],
+                    style: TextStyle(
+                        fontSize: 4.w,
+                        color: darkController.darkModeModel.isDarkMode
+                            ? CupertinoColors.white
+                            : CupertinoColors.black),
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 0.4.h,
-                right: 2.w,
-                child: Row(
-                  children: [
-                    time(
-                      time: ss['sent'],
-                    ),
-                    SizedBox(
-                      width: 1.w,
-                    ),
-                    Icon(
-                      Icons.done_all,
-                      size: 5.w,
-                    ),
-                  ],
+                Positioned(
+                  bottom: 0.4.h,
+                  right: 2.w,
+                  child: Row(
+                    children: [
+                      time(
+                        time: ss['sent'],
+                        who: who,
+                      ),
+                      SizedBox(
+                        width: 1.w,
+                      ),
+                      Icon(Icons.done_all,
+                          size: 5.w,
+                          color: (darkController.darkModeModel.isDarkMode)
+                              ? Color(0xff59a098)
+                              : Color(0xff98b08c)),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -261,66 +330,131 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget you({
     required ss,
-}){
+    required Map<String, dynamic> data,
+    required bool who,
+  }) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 13.w,
-        ),
-        child: Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.5.w)),
-          // color: Color(0xffdcf8c6),
-          margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
-          child: Stack(
-            children: [
-              Padding(
-                padding:  EdgeInsets.only(
-                  left: 1.5.w,
-                  right: 10.w,
-                  top: 0.6.h,
-                  bottom: 1.6.h,
+      child: GestureDetector(
+        onLongPress: () {
+          Get.dialog(
+            CupertinoAlertDialog(
+              title: Text("Delete Message"),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text("Delete"),
+                  isDestructiveAction: true,
+                  onPressed: () async {
+                    Get.back();
+                    await CFSHelper.cfsHelper.deletePerticularMessage(
+                        user: data, messageId: ss['id'].toString());
+                  },
                 ),
-                child: Text(
-                  ss['msg'],
-                  style: TextStyle(
-                    fontSize: 4.1.w,
+                CupertinoDialogAction(
+                  child: Text("Cansel"),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width - 13.w,
+          ),
+          child: Card(
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(2.5.w)),
+            color: darkController.darkModeModel.isDarkMode
+                ? Color(0xff3c3c3e)
+                : CupertinoColors.white,
+            margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 1.5.w,
+                    right: 10.w,
+                    top: 0.6.h,
+                    bottom: 1.6.h,
+                  ),
+                  child: Text(
+                    ss['msg'],
+                    style: TextStyle(
+                      fontSize: 4.1.w,
+                      color: darkController.darkModeModel.isDarkMode
+                          ? CupertinoColors.white
+                          : CupertinoColors.black,
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 0.4.h,
-                right: 2.w,
-                child: time(
-                  time: ss['sent'],
+                Positioned(
+                  bottom: 0.4.h,
+                  right: 2.w,
+                  child: time(
+                    time: ss['sent'],
+                    who: who,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-
-  Widget time({required String time}) {
+  Widget time({required String time, required bool who}) {
     DateTime tempDate = DateTime.parse(time);
     return (time.isNull)
         ? Container()
-        : RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: "${tempDate.hour.toString()}:",
-                  style: TextStyle(color: Colors.black, fontSize: 1.3.h),
+        : (who)
+            ? RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "${tempDate.hour.toString()}:",
+                      style: TextStyle(
+                          color: (darkController.darkModeModel.isDarkMode)
+                              ? Color(0xff59a098)
+                              : Color(0xff98b08c),
+                          fontSize: 1.3.h),
+                    ),
+                    TextSpan(
+                      text: tempDate.minute.toString(),
+                      style: TextStyle(
+                          color: (darkController.darkModeModel.isDarkMode)
+                              ? Color(0xff59a098)
+                              : Color(0xff98b08c),
+                          fontSize: 1.3.h),
+                    ),
+                  ],
                 ),
-                TextSpan(
-                  text: tempDate.minute.toString(),
-                  style: TextStyle(color: Colors.black, fontSize: 1.3.h),
+              )
+            : RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "${tempDate.hour.toString()}:",
+                      style: TextStyle(
+                          color: (darkController.darkModeModel.isDarkMode)
+                              ? Color(0xff7a797c)
+                              : Color(0xffcacaca),
+                          fontSize: 1.3.h),
+                    ),
+                    TextSpan(
+                      text: tempDate.minute.toString(),
+                      style: TextStyle(
+                          color: (darkController.darkModeModel.isDarkMode)
+                              ? Color(0xff7a797c)
+                              : Color(0xffcacaca),
+                          fontSize: 1.3.h),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
+              );
   }
 }
