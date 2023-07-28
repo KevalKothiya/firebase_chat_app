@@ -21,6 +21,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   String? userToken;
   TextEditingController displayNameController = TextEditingController();
+  TextEditingController aboutController = TextEditingController();
   User_GetxController user_getxController = Get.put(User_GetxController());
   Google_login_out_GetController google_login_out_getController =
       Get.put(Google_login_out_GetController());
@@ -126,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 onPressed: () async {
                                   Get.dialog(
                                     CupertinoAlertDialog(
-                                      title: Text("Update DisPlayName"),
+                                      title: Text("Update DisplayName"),
                                       content: Form(
                                         key: globalKey,
                                         child: Column(
@@ -175,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               placeholder: "Enter name here...",
                                               validator: (val) {
                                                 return (val!.isEmpty)
-                                                    ? "Enter DisplayNAme first..."
+                                                    ? "Enter DisplayName first..."
                                                     : null;
                                               },
                                             ),
@@ -187,18 +188,27 @@ class _ProfilePageState extends State<ProfilePage> {
                                           child: Text("Update"),
                                           isDefaultAction: true,
                                           onPressed: () async {
-                                            if (globalKey.currentState!
-                                                .validate()) {
-                                              globalKey.currentState!.save();
-                                              Get.back();
-                                              CFSHelper.cfsHelper
-                                                  .updateDisplayName(
-                                                      user: CFSHelper.auth,
-                                                      name:
-                                                          displayNameController
-                                                              .text);
-                                              displayNameController.clear();
-                                            }
+                                            // if (globalKey.currentState!
+                                            //     .validate()) {
+                                            //   globalKey.currentState!.save();
+                                            //   print(user_getxController.user_model.displayName);
+                                            //   setState(() {
+                                            //   print("2");
+                                            //     user_getxController.user_model.displayName = displayNameController.text;
+                                            //   print(user_getxController.user_model.displayName);
+                                            //   });
+                                            //   print("4");
+                                            //   print(user_getxController.user_model.displayName);
+                                            //   user_getxController.updateValue(val: displayNameController.text);
+                                            Get.back();
+                                            //   CFSHelper.cfsHelper
+                                            //       .updateDisplayName(
+                                            //           user: CFSHelper.auth,
+                                            //           name:
+                                            //               displayNameController
+                                            //                   .text);
+                                            //   displayNameController.clear();
+                                            // }
                                           },
                                         ),
                                         CupertinoDialogAction(
@@ -227,20 +237,106 @@ class _ProfilePageState extends State<ProfilePage> {
                                 height: 2.h,
                               ),
                               listTile(
-                                  leading: Icons.info_outline,
-                                  title: "About",
-                                  subtitle:
-                                      user_getxController.user_model.about,
-                                  onPressed: null),
+                                leading: Icons.info_outline,
+                                title: "About",
+                                subtitle: user_getxController.user_model.about,
+                                onPressed: () async {
+                                  Get.dialog(
+                                    CupertinoAlertDialog(
+                                      title: Text("Update About"),
+                                      content: Form(
+                                        key: globalKey,
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 1.0.h,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 7.w),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "About :",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            CupertinoTextFormFieldRow(
+                                              controller: aboutController,
+                                              style: TextStyle(
+                                                color: (darkController
+                                                        .darkModeModel
+                                                        .isDarkMode)
+                                                    ? CupertinoColors.white
+                                                    : CupertinoColors.black,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          2.w),
+                                                  border: Border.all(
+                                                      color: (darkController
+                                                              .darkModeModel
+                                                              .isDarkMode)
+                                                          ? CupertinoColors
+                                                              .white
+                                                          : CupertinoColors
+                                                              .black)),
+                                              placeholder:
+                                                  "Enter about here...",
+                                              validator: (val) {
+                                                return (val!.isEmpty)
+                                                    ? "Enter about section first..."
+                                                    : null;
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text("Update"),
+                                          isDefaultAction: true,
+                                          onPressed: () async {
+                                            if (globalKey.currentState!
+                                                .validate()) {
+                                              globalKey.currentState!.save();
+                                              Get.back();
+                                              user_getxController.user_model
+                                                  .about = aboutController.text;
+                                              aboutController.clear();
+                                            }
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: Text("Cansel"),
+                                          isDestructiveAction: true,
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                               SizedBox(
                                 height: 2.h,
                               ),
                               listTile(
-                                  leading: Icons.call,
-                                  title: "Phone",
-                                  subtitle: user_getxController
-                                      .user_model.phoneNumber,
-                                  onPressed: null),
+                                leading: Icons.call,
+                                title: "Phone",
+                                subtitle:
+                                    user_getxController.user_model.phoneNumber,
+                                onPressed: () {},
+                              ),
                             ],
                           ),
                         );

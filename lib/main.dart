@@ -6,13 +6,22 @@ import 'package:firebase_chat_app/screens/login_page.dart';
 import 'package:firebase_chat_app/screens/profile_page.dart';
 import 'package:firebase_chat_app/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:get_storage/get_storage.dart';
+@pragma('vm:entry-point')
 
+Future<void> _firebaseMessagingBackGroungHandle(RemoteMessage message) async {
+  print("=====BACKGROUND=======");
+  print("Notification Title :${message.notification!.title}");
+  print("Notification Body :${message.notification!.body}");
+
+  print("Data :${message.data}");
+  print("======================");
+}
 void main() async {
 
   await GetStorage.init();
@@ -21,6 +30,16 @@ void main() async {
 
   await Firebase.initializeApp();
 
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("=====FORGROUND=======");
+    print("Notification Title :${message.notification!.title}");
+    print("Notification Body :${message.notification!.body}");
+
+    print("Data :${message.data}");
+    print("======================");
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackGroungHandle);
   runApp(
     Sizer(
       builder: (context, _, __) {

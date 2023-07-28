@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_chat_app/helper/cloud_messaing_notification.dart';
 import 'package:firebase_chat_app/helper/fcm_messaging_helper.dart';
 import 'package:firebase_chat_app/helper/firebase_auth_helper.dart';
 import 'package:firebase_chat_app/modals/global/chat_user.dart';
@@ -19,7 +20,6 @@ class CFSHelper {
   late CollectionReference messageReference;
 
   void connectWithCollection() async {
-    log(auth.phoneNumber.toString());
     userReference = firestore.collection('users');
     messageReference = firestore.collection('message');
   }
@@ -46,6 +46,8 @@ class CFSHelper {
 
   Future<void> createUser({String? name, String? phoneNumber}) async {
     connectWithCollection();
+    String? token = await FCMHelper.fcmHelper.fetchTokan();
+    log(token.toString());
 
     final chatUser = ChatUser(
       image: auth.photoURL.toString(),
@@ -57,9 +59,9 @@ class CFSHelper {
       lastActive: FieldValue.serverTimestamp().toString(),
       email: auth.email.toString(),
       phone: (auth.phoneNumber.isNull)
-          ? phoneNumber!
+          ? (phoneNumber == null) ?"9231578230":phoneNumber
           : auth.phoneNumber.toString(),
-      pushToken: FCMHelper.fcmHelper.fetchTokan().toString(),
+      pushToken: token.toString(),
     );
 
     await userReference.doc(auth.uid).set(chatUser.toFirebase());
@@ -107,7 +109,11 @@ class CFSHelper {
         type: Type.text,
         sent: senderTime.toString());
 
-    await ref.doc("${recodeId}").set(message.toJson());
+    await ref.doc("${recodeId}").set(message.toJson()).then((value) => CMFBHelper.cmfbHelper.sendCMbyApi(user: user, msg: msg));
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> displaySentLastMessage({required Map<String, dynamic> user}) {
+    return firestore.collection("chat/${getConersationID(user['id'])}/messages/").orderBy('sent', descending: true).limit(1).snapshots();
   }
 
   Future<void> deletePerticularMessage(

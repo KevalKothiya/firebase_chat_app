@@ -40,4 +40,11 @@ class User_GetxController extends GetxController {
 
     update();
   }
+
+
+  updateValue({required String val}){
+    user_model.displayName = val;
+    box.write('displayName', user_model.displayName);
+    update();
+  }
 }

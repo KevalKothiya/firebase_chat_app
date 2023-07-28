@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_chat_app/controllers/log_in_out_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
+import 'package:firebase_chat_app/helper/facebook_auth_helper.dart';
 import 'package:firebase_chat_app/helper/fcm_messaging_helper.dart';
 import 'package:firebase_chat_app/helper/firebase_auth_helper.dart';
 import 'package:flutter/gestures.dart';
@@ -275,7 +276,9 @@ class _LoginPageState extends State<LoginPage> {
                         width: 5.w,
                       ),
                       multiFactorAuth(
-                        onTap: () {},
+                        onTap: () async {
+                          FBFBHelper.fbfbHelper.signInWithFacebook();
+                        },
                         image: "assets/images/facebook.png",
                       ),
                       SizedBox(

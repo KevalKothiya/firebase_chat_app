@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/controllers/dark_theme_gc.dart';
+import 'package:firebase_chat_app/controllers/textediter_gc.dart';
 import 'package:firebase_chat_app/controllers/user_data_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,8 +22,8 @@ class _ChatPageState extends State<ChatPage> {
   User_GetxController user_getxController = Get.put(User_GetxController());
 
   DarkMode_GetxController darkController = Get.put(DarkMode_GetxController());
+  TextEditingController_GetxController textController = Get.put(TextEditingController_GetxController());
 
-  TextEditingController textEditingController = TextEditingController();
   Color iconColor = Color(0xff3a90df);
 
   @override
@@ -121,7 +124,10 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Expanded(
                               child: TextFormField(
-                                controller: textEditingController,
+                                onTap: (){
+                                  textController.convertIntoTrue();
+                                },
+                                controller: textController.textEditingController,
                                 decoration: InputDecoration.collapsed(
                                     hintText: " Types here...",
                                     border: InputBorder.none),
@@ -141,7 +147,7 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                       ),
                     ),
-                    (textEditingController.text.isEmpty)
+                    (textController.isTyping == false)
                         ? Row(
                             children: [
                               IconButton(
@@ -172,9 +178,12 @@ class _ChatPageState extends State<ChatPage> {
                               onPressed: () async {
                                 await CFSHelper.cfsHelper.sendMessage(
                                     user: model.data(),
-                                    msg: textEditingController.text);
+                                    msg: textController.textEditingController.text);
+                                textController.clearMethod();
+                                textController.convertIntoFalse();
+                                setState(() {
 
-                                textEditingController.clear();
+                                });
                               },
                               icon: Icon(
                                 Icons.send,
@@ -203,7 +212,7 @@ class _ChatPageState extends State<ChatPage> {
               foregroundImage: NetworkImage(ss.data()['image']),
             ),
             placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            errorWidget: (context, url, error) => Icon(Icons.person),
           ),
           SizedBox(
             width: 2.w,
@@ -333,6 +342,7 @@ class _ChatPageState extends State<ChatPage> {
     required Map<String, dynamic> data,
     required bool who,
   }) {
+
     return Align(
       alignment: Alignment.centerLeft,
       child: GestureDetector(
