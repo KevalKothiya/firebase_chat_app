@@ -41,7 +41,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   controller: pageController,
                   scrollDirection: Axis.horizontal,
                   pageSnapping: true,
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   onPageChanged: (val) {
                     welcomeController.initializedValue(index: val);
                   },
@@ -119,7 +119,7 @@ class _WelcomePageState extends State<WelcomePage> {
       height: double.infinity,
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             Color(0xff393a54),
             Color(0xff1a1929),
@@ -185,12 +185,12 @@ class _WelcomePageState extends State<WelcomePage> {
                         ),
                       ),
                       side: MaterialStateProperty.all(
-                        BorderSide(
+                        const BorderSide(
                           color: Colors.white,
                         ),
                       ),
                     ),
-                    child: Text("Login"),
+                    child: const Text("Login"),
                   ),
                 ),
         ],

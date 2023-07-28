@@ -13,7 +13,11 @@ class _MenuWidgetState extends State<MenuWidget> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        onPressed: () => ZoomDrawer.of(context)!.toggle(),
-        icon: Icon(Icons.menu,size: 7.w,));
+      onPressed: () => ZoomDrawer.of(context)!.toggle(),
+      icon: Icon(
+        Icons.menu,
+        size: 7.w,
+      ),
+    );
   }
 }

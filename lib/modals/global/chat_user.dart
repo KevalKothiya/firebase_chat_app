@@ -1,5 +1,3 @@
-
-
 class ChatUser {
   late String image;
   late String about;
@@ -24,7 +22,6 @@ class ChatUser {
     required this.phone,
     required this.pushToken,
   });
-
 
   ChatUser.fromJson(Map<String, dynamic> json) {
     image = json['image'] ?? '';

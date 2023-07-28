@@ -1,5 +1,3 @@
-import 'package:get/get.dart';
-
 class WelconeModel {
   int index;
   bool welcomeOver;

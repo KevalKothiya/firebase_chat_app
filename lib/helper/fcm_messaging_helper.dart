@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FCMHelper {
@@ -9,7 +10,7 @@ class FCMHelper {
   Future<String?> fetchTokan() async {
     await firebaseMessaging.requestPermission();
     String? token = await  firebaseMessaging.getToken();
-    print(token);
+    log(token.toString());
     return await firebaseMessaging.getToken();
   }
 }

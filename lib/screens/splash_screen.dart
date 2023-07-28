@@ -11,15 +11,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver{
-  Google_login_out_GetController google_login_out_getController =
+  Google_login_out_GetController googleSingUpInController =
       Get.put(Google_login_out_GetController());
   Welcome_GetxController welcomeController = Get.put(Welcome_GetxController());
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 2))
+    Future.delayed(const Duration(seconds: 2))
         .then((value) => (welcomeController.welconeModel.welcomeOver)
-            ? (google_login_out_getController.google_login_out_modal.isLogin)
+            ? (googleSingUpInController.google_login_out_modal.isLogin)
                 ? Get.offAndToNamed('/')
                 : Get.offAndToNamed('/login_page')
             : Get.offAllNamed('/welcome_page'));
@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/logo.png"),
           ),

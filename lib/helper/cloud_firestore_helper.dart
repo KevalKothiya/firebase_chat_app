@@ -52,12 +52,14 @@ class CFSHelper {
     final chatUser = ChatUser(
       image: auth.photoURL.toString(),
       about: "about",
+      // ignore: deprecated_member_use
       name: (auth.displayName.isNull) ? name! : auth.displayName.toString(),
       createdAt: FieldValue.serverTimestamp().toString(),
       isOnline: false,
       id: auth.uid,
       lastActive: FieldValue.serverTimestamp().toString(),
       email: auth.email.toString(),
+      // ignore: deprecated_member_use
       phone: (auth.phoneNumber.isNull)
           ? (phoneNumber == null) ?"9231578230":phoneNumber
           : auth.phoneNumber.toString(),
@@ -76,7 +78,7 @@ class CFSHelper {
     String id = getConersationID(user['id']);
 
     return firestore
-        .collection('chat/${id}/messages/')
+        .collection('chat/$id/messages/')
         .orderBy("sent", descending: true)
         .snapshots();
   }
@@ -85,7 +87,6 @@ class CFSHelper {
       {required Map<String, dynamic> user, required String msg}) async {
     connectWithCollection();
     String id = getConersationID(user['id']);
-    FieldValue time = FieldValue.serverTimestamp();
 
     DocumentSnapshot<Map<String, dynamic>> data =
         await firestore.collection('chatRecode').doc("chat").get();
@@ -94,7 +95,7 @@ class CFSHelper {
 
     int recodeId = ss['id'];
 
-    final ref = firestore.collection('chat/${id}/messages/');
+    final ref = firestore.collection('chat/$id/messages/');
 
     DateTime senderTime = DateTime.now();
 
@@ -109,7 +110,7 @@ class CFSHelper {
         type: Type.text,
         sent: senderTime.toString());
 
-    await ref.doc("${recodeId}").set(message.toJson()).then((value) => CMFBHelper.cmfbHelper.sendCMbyApi(user: user, msg: msg));
+    await ref.doc("$recodeId").set(message.toJson()).then((value) => CMFBHelper.cmfbHelper.sendCMbyApi(user: user, msg: msg));
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> displaySentLastMessage({required Map<String, dynamic> user}) {
@@ -120,7 +121,7 @@ class CFSHelper {
       {required Map<String, dynamic> user, required String messageId}) async {
     connectWithCollection();
     String id = getConersationID(user['id']);
-    await firestore.collection('chat/${id}/messages/').doc(messageId).delete();
+    await firestore.collection('chat/$id/messages/').doc(messageId).delete();
   }
 
   Future<void> updateDisplayName({required User user, required String name}) async {

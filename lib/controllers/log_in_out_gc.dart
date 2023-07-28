@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, non_constant_identifier_names
+
 import 'package:firebase_chat_app/modals/global/log_in_out.dart';
 import 'package:firebase_chat_app/modals/util/utils.dart';
 

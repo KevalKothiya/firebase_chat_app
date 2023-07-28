@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_chat_app/controllers/user_data_gc.dart';
-import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
 import 'package:firebase_chat_app/helper/fcm_messaging_helper.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -31,9 +29,9 @@ class FBHelper {
       UserCredential userCredential =
           await firebaseAuth.signInWithCredential(credential);
 
-      User_GetxController user_getxController = User_GetxController();
+      User_GetxController userController = User_GetxController();
       String? userToken = await FCMHelper.fcmHelper.fetchTokan();
-      user_getxController.initialization(
+      userController.initialization(
           email: firebaseAuth.currentUser!.email!,
           uid: firebaseAuth.currentUser!.uid,
           displayName: firebaseAuth.currentUser!.displayName!,
@@ -70,16 +68,6 @@ class FBHelper {
       User? user = userCredential.user;
 
       data['user'] = user;
-
-      // User_GetxController userController = User_GetxController();
-      // String? userToken = await FCMHelper.fcmHelper.fetchTokan();
-      // Stream<QuerySnapshot> userData = CFSHelper.cfsHelper.diplayCurrentUser();
-      //
-      // userController.initialization(
-      //     email: firebaseAuth.currentUser!.email!,
-      //     uid: firebaseAuth.currentUser!.uid,
-      //     displayName: firebaseAuth.currentUser!.displayName!,
-      //     token: userToken!);
 
       return data;
     } on FirebaseAuthException catch (e) {

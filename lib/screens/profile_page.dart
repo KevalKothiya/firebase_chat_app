@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/controllers/dark_theme_gc.dart';
-import 'package:firebase_chat_app/controllers/log_in_out_gc.dart';
 import 'package:firebase_chat_app/controllers/user_data_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
 import 'package:firebase_chat_app/helper/fcm_messaging_helper.dart';
@@ -22,9 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? userToken;
   TextEditingController displayNameController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
-  User_GetxController user_getxController = Get.put(User_GetxController());
-  Google_login_out_GetController google_login_out_getController =
-      Get.put(Google_login_out_GetController());
+  User_GetxController userController = Get.put(User_GetxController());
   DarkMode_GetxController darkController = Get.put(DarkMode_GetxController());
 
   GlobalKey<FormState> globalKey = GlobalKey<FormState>();
@@ -45,8 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
       onTap: () => Focus.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Profile Page"),
-          leading: MenuWidget(),
+          title: const Text("Profile Page"),
+          leading: const MenuWidget(),
         ),
         body: StreamBuilder(
             stream: CFSHelper.cfsHelper.diplayCurrentUser(),
@@ -61,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 List<QueryDocumentSnapshot<Map<String, dynamic>>> current =
                     ss.docs;
-                user_getxController.initialization(
+                userController.initialization(
                     email: current[0].data()['email'],
                     uid: current[0].data()['id'],
                     displayName: current[0].data()['name'],
@@ -72,18 +69,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text("Empty"),
                       )
                     : GetBuilder<User_GetxController>(builder: (context) {
-                        print(
-                            "photo :${user_getxController.user_model.photoURl}");
                         return Container(
                           padding: EdgeInsets.all(2.h),
                           child: Column(
                             children: [
                               Stack(
-                                alignment: Alignment(1, 0.8),
+                                alignment: const Alignment(1, 0.8),
                                 children: [
                                   CachedNetworkImage(
                                     imageUrl:
-                                        user_getxController.user_model.photoURl,
+                                        userController.user_model.photoURl,
                                     imageBuilder: (context, imageProvider) =>
                                         Container(
                                       height: 20.h,
@@ -91,11 +86,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
-                                          image: NetworkImage(
-                                              user_getxController
-                                                  .user_model.photoURl),
+                                          image: NetworkImage(userController
+                                              .user_model.photoURl),
                                           fit: BoxFit.cover,
-                                          colorFilter: ColorFilter.mode(
+                                          colorFilter: const ColorFilter.mode(
                                             Colors.red,
                                             BlendMode.colorBurn,
                                           ),
@@ -103,11 +97,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                     placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
+                                        const CircularProgressIndicator(),
                                     errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
+                                        const Icon(Icons.error),
                                   ),
-                                  CircleAvatar(
+                                  const CircleAvatar(
                                     child: IconButton(
                                       onPressed: null,
                                       icon: Icon(Icons.camera),
@@ -118,7 +112,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SizedBox(
                                 height: 2.h,
                               ),
-                              Text(user_getxController.user_model.email),
+                              Text(userController.user_model.email),
                               SizedBox(
                                 height: 4.h,
                               ),
@@ -127,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 onPressed: () async {
                                   Get.dialog(
                                     CupertinoAlertDialog(
-                                      title: Text("Update DisplayName"),
+                                      title: const Text("Update DisplayName"),
                                       content: Form(
                                         key: globalKey,
                                         child: Column(
@@ -138,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 7.w),
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
@@ -185,46 +179,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       actions: [
                                         CupertinoDialogAction(
-                                          child: Text("Update"),
                                           isDefaultAction: true,
                                           onPressed: () async {
-                                            // if (globalKey.currentState!
-                                            //     .validate()) {
-                                            //   globalKey.currentState!.save();
-                                            //   print(user_getxController.user_model.displayName);
-                                            //   setState(() {
-                                            //   print("2");
-                                            //     user_getxController.user_model.displayName = displayNameController.text;
-                                            //   print(user_getxController.user_model.displayName);
-                                            //   });
-                                            //   print("4");
-                                            //   print(user_getxController.user_model.displayName);
-                                            //   user_getxController.updateValue(val: displayNameController.text);
                                             Get.back();
-                                            //   CFSHelper.cfsHelper
-                                            //       .updateDisplayName(
-                                            //           user: CFSHelper.auth,
-                                            //           name:
-                                            //               displayNameController
-                                            //                   .text);
-                                            //   displayNameController.clear();
-                                            // }
                                           },
+                                          child: const Text("Update"),
                                         ),
                                         CupertinoDialogAction(
-                                          child: Text("Cansel"),
                                           isDestructiveAction: true,
                                           onPressed: () {
                                             Get.back();
                                           },
+                                          child: const Text("Cansel"),
                                         ),
                                       ],
                                     ),
                                   );
                                 },
                                 title: "Name",
-                                subtitle:
-                                    user_getxController.user_model.displayName,
+                                subtitle: userController.user_model.displayName,
                               ),
                               Padding(
                                   padding: EdgeInsets.only(left: 5.h),
@@ -239,11 +212,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               listTile(
                                 leading: Icons.info_outline,
                                 title: "About",
-                                subtitle: user_getxController.user_model.about,
+                                subtitle: userController.user_model.about,
                                 onPressed: () async {
                                   Get.dialog(
                                     CupertinoAlertDialog(
-                                      title: Text("Update About"),
+                                      title: const Text("Update About"),
                                       content: Form(
                                         key: globalKey,
                                         child: Column(
@@ -254,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Padding(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 7.w),
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
@@ -302,25 +275,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       actions: [
                                         CupertinoDialogAction(
-                                          child: Text("Update"),
                                           isDefaultAction: true,
                                           onPressed: () async {
                                             if (globalKey.currentState!
                                                 .validate()) {
                                               globalKey.currentState!.save();
                                               Get.back();
-                                              user_getxController.user_model
-                                                  .about = aboutController.text;
+                                              userController.user_model.about =
+                                                  aboutController.text;
                                               aboutController.clear();
                                             }
                                           },
+                                          child: const Text("Update"),
                                         ),
                                         CupertinoDialogAction(
-                                          child: Text("Cansel"),
                                           isDestructiveAction: true,
                                           onPressed: () {
                                             Get.back();
                                           },
+                                          child: const Text("Cansel"),
                                         ),
                                       ],
                                     ),
@@ -333,8 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               listTile(
                                 leading: Icons.call,
                                 title: "Phone",
-                                subtitle:
-                                    user_getxController.user_model.phoneNumber,
+                                subtitle: userController.user_model.phoneNumber,
                                 onPressed: () {},
                               ),
                             ],
@@ -342,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                       });
               }
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }),
@@ -358,9 +330,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }) {
     return ListTile(
       leading: Icon(leading),
-      title: Text(title, style: TextStyle(color: Colors.grey)),
+      title: Text(title, style: const TextStyle(color: Colors.grey)),
       subtitle: Text(subtitle),
-      trailing: IconButton(onPressed: onPressed, icon: Icon(Icons.edit)),
+      trailing: IconButton(onPressed: onPressed, icon: const Icon(Icons.edit)),
     );
   }
 }

@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_chat_app/controllers/log_in_out_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
 import 'package:firebase_chat_app/helper/facebook_auth_helper.dart';
-import 'package:firebase_chat_app/helper/fcm_messaging_helper.dart';
 import 'package:firebase_chat_app/helper/firebase_auth_helper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +15,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Google_login_out_GetController google_login_out_getController =
-  Get.put(Google_login_out_GetController());
+  Google_login_out_GetController googleSingUpInController =
+      Get.put(Google_login_out_GetController());
   int index = 0;
   GlobalKey<FormState> globalKeySignUp = GlobalKey<FormState>();
   GlobalKey<FormState> globalKeySignIn = GlobalKey<FormState>();
@@ -40,8 +38,8 @@ class _LoginPageState extends State<LoginPage> {
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: index == 0
-                    ? AssetImage("assets/images/login.png")
-                    : AssetImage("assets/images/sign_up.png"),
+                    ? const AssetImage("assets/images/login.png")
+                    : const AssetImage("assets/images/sign_up.png"),
                 fit: BoxFit.cover),
           ),
           alignment: Alignment.center,
@@ -51,14 +49,13 @@ class _LoginPageState extends State<LoginPage> {
               //singIn
               Column(
                 children: [
-                  Spacer(
+                  const Spacer(
                     flex: 5,
                   ),
                   ShaderMask(
-                    shaderCallback: (bounds) =>
-                        LinearGradient(
-                          colors: [Colors.black, Colors.blue],
-                        ).createShader(bounds),
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Colors.black, Colors.blue],
+                    ).createShader(bounds),
                     child: Text(
                       'ChatApp',
                       style: TextStyle(
@@ -69,15 +66,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 2,
                   ),
                   Text(
                     "Log In",
-                    style: TextStyle(
-                        fontSize: 8.w, fontWeight: FontWeight.w500),
+                    style:
+                        TextStyle(fontSize: 8.w, fontWeight: FontWeight.w500),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 4.h),
                     child: Form(
@@ -96,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               TextFormField(
                                 controller: nameSingInController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: "Enter your full name",
                                   hintStyle: TextStyle(
                                     color: Colors.grey,
@@ -125,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               TextFormField(
                                 controller: emailSingInController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: "Enter your email address",
                                   hintStyle: TextStyle(
                                     color: Colors.grey,
@@ -154,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               TextFormField(
                                 controller: passwordSingInController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: "Enter a password",
                                   hintStyle: TextStyle(
                                     color: Colors.grey,
@@ -171,17 +168,19 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("forgot password?"),
+                                const Text("forgot password?"),
                                 RichText(
                                   text: TextSpan(children: [
-                                    TextSpan(
+                                    const TextSpan(
                                         text: "new user? ",
                                         style: TextStyle(color: Colors.black)),
                                     TextSpan(
                                         text: " Sign-Up",
-                                        style: TextStyle(color: Colors.indigo),
+                                        style: const TextStyle(
+                                            color: Colors.indigo),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
                                             setState(() {
@@ -195,7 +194,6 @@ class _LoginPageState extends State<LoginPage> {
                                           }),
                                   ]),
                                 )
-
                               ]),
                           SizedBox(
                             height: 6.h,
@@ -211,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                               emailSingInController.clear();
                               passwordSingInController.clear();
                             },
-                            child: Text(
+                            child: const Text(
                               "Sign In",
                               style: TextStyle(
                                 color: Colors.black,
@@ -222,10 +220,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("----------------------------------"),
@@ -234,14 +232,14 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Row(
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       multiFactorAuth(
                         onTap: () async {
                           Map<String, dynamic> data =
-                          await FBHelper.fbHelper.singInWithGoogle();
+                              await FBHelper.fbHelper.singInWithGoogle();
 
                           if (data['user'] != null) {
                             Get.snackbar(
@@ -259,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .createUser()
                                   .then((value) => Get.offAndToNamed('/'));
                             }
-                            google_login_out_getController.trueValue();
+                            googleSingUpInController.trueValue();
                           } else {
                             Get.snackbar(
                               "Failed",
@@ -288,10 +286,10 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {},
                         image: "assets/images/twitter.png",
                       ),
-                      Spacer(),
+                      const Spacer(),
                     ],
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 3,
                   ),
                 ],
@@ -299,14 +297,13 @@ class _LoginPageState extends State<LoginPage> {
               //singUp
               Column(
                 children: [
-                  Spacer(
+                  const Spacer(
                     flex: 5,
                   ),
                   ShaderMask(
-                    shaderCallback: (bounds) =>
-                        LinearGradient(
-                          colors: [Colors.black, Colors.blue],
-                        ).createShader(bounds),
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Colors.black, Colors.blue],
+                    ).createShader(bounds),
                     child: Text(
                       'ChatApp',
                       style: TextStyle(
@@ -317,15 +314,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 2,
                   ),
                   Text(
                     "Sign Up",
-                    style: TextStyle(
-                        fontSize: 8.w, fontWeight: FontWeight.w500),
+                    style:
+                        TextStyle(fontSize: 8.w, fontWeight: FontWeight.w500),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 4.h),
                     child: Form(
@@ -384,7 +381,7 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () async {
                               await validateAndSignUp();
                             },
-                            child: Text(
+                            child: const Text(
                               "Sign Up",
                               style: TextStyle(
                                 color: Colors.black,
@@ -402,12 +399,12 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.center,
                     child: RichText(
                       text: TextSpan(children: [
-                        TextSpan(
+                        const TextSpan(
                             text: "You have already Account? ",
                             style: TextStyle(color: Colors.black)),
                         TextSpan(
                             text: " Sign-In",
-                            style: TextStyle(color: Colors.indigo),
+                            style: const TextStyle(color: Colors.indigo),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 setState(() {
@@ -421,10 +418,10 @@ class _LoginPageState extends State<LoginPage> {
                       ]),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("----------------------------------"),
@@ -433,14 +430,14 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Row(
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       multiFactorAuth(
                         onTap: () async {
                           Map<String, dynamic> data =
-                          await FBHelper.fbHelper.singInWithGoogle();
+                              await FBHelper.fbHelper.singInWithGoogle();
 
                           if (data['user'] != null) {
                             Get.snackbar(
@@ -458,7 +455,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .createUser()
                                   .then((value) => Get.offAndToNamed('/'));
                             }
-                            google_login_out_getController.trueValue();
+                            googleSingUpInController.trueValue();
                           } else {
                             Get.snackbar(
                               "Failed",
@@ -485,10 +482,10 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {},
                         image: "assets/images/twitter.png",
                       ),
-                      Spacer(),
+                      const Spacer(),
                     ],
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 3,
                   ),
                 ],
@@ -520,7 +517,7 @@ class _LoginPageState extends State<LoginPage> {
           controller: controller,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               color: Colors.grey,
             ),
           ),
@@ -545,15 +542,15 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
   Future<void> validateAndSignIn() async {
     if (globalKeySignIn.currentState!.validate()) {
       globalKeySignIn.currentState!.save();
-      String? userMessagingTokan = await FCMHelper.fcmHelper.fetchTokan();
 
-      Map<String, dynamic> data = await FBHelper.fbHelper
-          .signInWithEmailPassword(
-          email: emailSingInController.text,
-          password: passwordSingInController.text,
+      Map<String, dynamic> data =
+          await FBHelper.fbHelper.signInWithEmailPassword(
+        email: emailSingInController.text,
+        password: passwordSingInController.text,
       );
 
       if (data['user'] != null) {
@@ -565,7 +562,7 @@ class _LoginPageState extends State<LoginPage> {
           duration: const Duration(seconds: 1),
         );
         Get.offAndToNamed('/');
-        google_login_out_getController.trueValue();
+        googleSingUpInController.trueValue();
       } else {
         Get.snackbar(
           "Failed",
@@ -584,8 +581,8 @@ class _LoginPageState extends State<LoginPage> {
 
       Map<String, dynamic> data = await FBHelper.fbHelper
           .signUpWithEmailPassword(
-          email: emailSingUpController.text,
-          password: passwordSingUpController.text);
+              email: emailSingUpController.text,
+              password: passwordSingUpController.text);
 
       if (data['user'] != null) {
         Get.snackbar(
@@ -595,22 +592,26 @@ class _LoginPageState extends State<LoginPage> {
           snackPosition: SnackPosition.BOTTOM,
           duration: const Duration(seconds: 1),
         );
-        User? user = data['user'];
         if (await CFSHelper.cfsHelper.userExits()) {
-          print("1");
           CFSHelper.cfsHelper.diplayAllRecode();
-          setState(() {
-            index = 0;
-          });
+          setState(
+            () {
+              index = 0;
+            },
+          );
         } else {
-          print("2");
           CFSHelper.cfsHelper
-              .createUser(name: nameSingUpController.text,phoneNumber: phoneNumberSingUpController.text)
-              .then((value) =>   setState(() {
-            index = 0;
-          }));
+              .createUser(
+                  name: nameSingUpController.text,
+                  phoneNumber: phoneNumberSingUpController.text)
+              .then(
+                (value) => setState(
+                  () {
+                    index = 0;
+                  },
+                ),
+              );
         }
-
       } else {
         Get.snackbar(
           "Failed",

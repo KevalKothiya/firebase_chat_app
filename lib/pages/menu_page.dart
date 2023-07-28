@@ -1,6 +1,5 @@
 import 'package:firebase_chat_app/modals/global/drawer_menu.dart';
 import 'package:firebase_chat_app/modals/util/utils.dart';
-
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -19,14 +18,12 @@ class _MenuScreenState extends State<MenuScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Container(
-          child:Column(
-            children: [
-              Spacer(),
-              ...MenuItems.all.map(buildMenuItem).toList(),
-              Spacer(flex: 2,)
-            ],
-          ),
+        body: Column(
+          children: [
+            const Spacer(),
+            ...MenuItems.all.map(buildMenuItem).toList(),
+            const Spacer(flex: 2,)
+          ],
         ),
       ),
     );

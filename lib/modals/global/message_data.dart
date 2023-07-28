@@ -40,40 +40,4 @@ class Message {
   }
 }
 
-enum Type {text, image}
-
-// class MessageModel {
-//   String msg;
-//   String read;
-//   String fromId;
-//   String toId;
-//   Type type;
-//   String send;
-//
-//   MessageModel({
-//     required this.msg,
-//     required this.read,
-//     required this.fromId,
-//     required this.toId,
-//     required this.type,
-//     required this.send,
-//   });
-//
-//   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
-//     msg: json["msg"],
-//     read: json["read"],
-//     fromId: json["from_id"],
-//     toId: json["to_id"],
-//     type: json["type"] == Type.image.name ? Types.image : Types.text,
-//     send: json["send"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "msg": msg,
-//     "read": read,
-//     "from_id": fromId,
-//     "to_id": toId,
-//     "type": type,
-//     "send": send,
-//   };
-// }
+enum Type { text, image }

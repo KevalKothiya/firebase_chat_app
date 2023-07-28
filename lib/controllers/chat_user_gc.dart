@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/modals/global/chat_user.dart';
 import 'package:firebase_chat_app/modals/util/utils.dart';
@@ -17,7 +19,8 @@ class ChatUser_GetxController extends GetxController {
     pushToken: box.read('pushToken') ?? "",
   );
 
-  initializedValue({required List<QueryDocumentSnapshot<Map<String, dynamic>>> val}) {
+  initializedValue(
+      {required List<QueryDocumentSnapshot<Map<String, dynamic>>> val}) {
     val.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
 
     box.write('image', chatUser.image);

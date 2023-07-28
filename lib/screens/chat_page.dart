@@ -1,10 +1,8 @@
-import 'dart:developer';
-
+// ignore_for_file: deprecated_member_use
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/controllers/dark_theme_gc.dart';
 import 'package:firebase_chat_app/controllers/textediter_gc.dart';
-import 'package:firebase_chat_app/controllers/user_data_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_firestore_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +17,11 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  User_GetxController user_getxController = Get.put(User_GetxController());
-
   DarkMode_GetxController darkController = Get.put(DarkMode_GetxController());
-  TextEditingController_GetxController textController = Get.put(TextEditingController_GetxController());
+  TextEditingController_GetxController textController =
+      Get.put(TextEditingController_GetxController());
 
-  Color iconColor = Color(0xff3a90df);
+  Color iconColor = const Color(0xff3a90df);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,7 @@ class _ChatPageState extends State<ChatPage> {
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.back,
             ),
           ),
@@ -49,8 +46,8 @@ class _ChatPageState extends State<ChatPage> {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: (darkController.darkModeModel.isDarkMode)
-                  ? AssetImage("assets/images/dark_chat_wallpaper.jpg")
-                  : AssetImage("assets/images/light_chat_wallpaper.jpg"),
+                  ? const AssetImage("assets/images/dark_chat_wallpaper.jpg")
+                  : const AssetImage("assets/images/light_chat_wallpaper.jpg"),
               fit: BoxFit.cover,
             ),
           ),
@@ -74,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
                       List<QueryDocumentSnapshot<Map<String, dynamic>>> ss =
                           data!.docs;
                       return (ss.isEmpty)
-                          ? Center(
+                          ? const Center(
                               child: Text("Empty"),
                             )
                           : ListView.builder(
@@ -95,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
                               },
                             );
                     }
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   },
@@ -103,8 +100,8 @@ class _ChatPageState extends State<ChatPage> {
               ),
               Container(
                 color: darkController.darkModeModel.isDarkMode
-                    ? Color(0xff171717)
-                    : Color(0xfff6f6f6),
+                    ? const Color(0xff171717)
+                    : const Color(0xfff6f6f6),
                 padding: EdgeInsets.all(2.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -124,11 +121,12 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Expanded(
                               child: TextFormField(
-                                onTap: (){
+                                onTap: () {
                                   textController.convertIntoTrue();
                                 },
-                                controller: textController.textEditingController,
-                                decoration: InputDecoration.collapsed(
+                                controller:
+                                    textController.textEditingController,
+                                decoration: const InputDecoration.collapsed(
                                     hintText: " Types here...",
                                     border: InputBorder.none),
                                 validator: (val) => (val!.isNotEmpty)
@@ -178,12 +176,11 @@ class _ChatPageState extends State<ChatPage> {
                               onPressed: () async {
                                 await CFSHelper.cfsHelper.sendMessage(
                                     user: model.data(),
-                                    msg: textController.textEditingController.text);
+                                    msg: textController
+                                        .textEditingController.text);
                                 textController.clearMethod();
                                 textController.convertIntoFalse();
-                                setState(() {
-
-                                });
+                                setState(() {});
                               },
                               icon: Icon(
                                 Icons.send,
@@ -211,8 +208,8 @@ class _ChatPageState extends State<ChatPage> {
             imageBuilder: (context, imageProvider) => CircleAvatar(
               foregroundImage: NetworkImage(ss.data()['image']),
             ),
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.person),
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.person),
           ),
           SizedBox(
             width: 2.w,
@@ -225,21 +222,21 @@ class _ChatPageState extends State<ChatPage> {
               ),
               Text(ss.data()['name']),
               // Text(ss[0].data()['last_active']),
-              Text("Last Time")
+              const Text("Last Time")
             ],
           ),
-          Spacer(),
+          const Spacer(),
           Transform.scale(
               scale: 1.5,
               child: IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   CupertinoIcons.video_camera,
                 ),
               )),
           IconButton(
             onPressed: () {},
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.phone,
             ),
           ),
@@ -259,10 +256,10 @@ class _ChatPageState extends State<ChatPage> {
         onLongPress: () {
           Get.dialog(
             CupertinoAlertDialog(
-              title: Text("Delete Message"),
+              title: const Text("Delete Message"),
               actions: [
                 CupertinoDialogAction(
-                  child: Text("Delete"),
+                  child: const Text("Delete"),
                   onPressed: () async {
                     Get.back();
                     await CFSHelper.cfsHelper.deletePerticularMessage(
@@ -270,7 +267,7 @@ class _ChatPageState extends State<ChatPage> {
                   },
                 ),
                 CupertinoDialogAction(
-                  child: Text("Cansel"),
+                  child: const Text("Cansel"),
                   onPressed: () {
                     Get.back();
                   },
@@ -288,8 +285,8 @@ class _ChatPageState extends State<ChatPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(2.5.w)),
             color: darkController.darkModeModel.isDarkMode
-                ? Color(0xff0f5348)
-                : Color(0xffdcf8c6),
+                ? const Color(0xff0f5348)
+                : const Color(0xffdcf8c6),
             margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
             child: Stack(
               children: [
@@ -324,8 +321,8 @@ class _ChatPageState extends State<ChatPage> {
                       Icon(Icons.done_all,
                           size: 5.w,
                           color: (darkController.darkModeModel.isDarkMode)
-                              ? Color(0xff59a098)
-                              : Color(0xff98b08c)),
+                              ? const Color(0xff59a098)
+                              : const Color(0xff98b08c)),
                     ],
                   ),
                 ),
@@ -342,26 +339,25 @@ class _ChatPageState extends State<ChatPage> {
     required Map<String, dynamic> data,
     required bool who,
   }) {
-
     return Align(
       alignment: Alignment.centerLeft,
       child: GestureDetector(
         onLongPress: () {
           Get.dialog(
             CupertinoAlertDialog(
-              title: Text("Delete Message"),
+              title: const Text("Delete Message"),
               actions: [
                 CupertinoDialogAction(
-                  child: Text("Delete"),
                   isDestructiveAction: true,
                   onPressed: () async {
                     Get.back();
                     await CFSHelper.cfsHelper.deletePerticularMessage(
                         user: data, messageId: ss['id'].toString());
                   },
+                  child: const Text("Delete"),
                 ),
                 CupertinoDialogAction(
-                  child: Text("Cansel"),
+                  child: const Text("Cansel"),
                   onPressed: () {
                     Get.back();
                   },
@@ -379,7 +375,7 @@ class _ChatPageState extends State<ChatPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(2.5.w)),
             color: darkController.darkModeModel.isDarkMode
-                ? Color(0xff3c3c3e)
+                ? const Color(0xff3c3c3e)
                 : CupertinoColors.white,
             margin: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
             child: Stack(
@@ -429,16 +425,16 @@ class _ChatPageState extends State<ChatPage> {
                       text: "${tempDate.hour.toString()}:",
                       style: TextStyle(
                           color: (darkController.darkModeModel.isDarkMode)
-                              ? Color(0xff59a098)
-                              : Color(0xff98b08c),
+                              ? const Color(0xff59a098)
+                              : const Color(0xff98b08c),
                           fontSize: 1.3.h),
                     ),
                     TextSpan(
                       text: tempDate.minute.toString(),
                       style: TextStyle(
                           color: (darkController.darkModeModel.isDarkMode)
-                              ? Color(0xff59a098)
-                              : Color(0xff98b08c),
+                              ? const Color(0xff59a098)
+                              : const Color(0xff98b08c),
                           fontSize: 1.3.h),
                     ),
                   ],
@@ -451,16 +447,16 @@ class _ChatPageState extends State<ChatPage> {
                       text: "${tempDate.hour.toString()}:",
                       style: TextStyle(
                           color: (darkController.darkModeModel.isDarkMode)
-                              ? Color(0xff7a797c)
-                              : Color(0xffcacaca),
+                              ? const Color(0xff7a797c)
+                              : const Color(0xffcacaca),
                           fontSize: 1.3.h),
                     ),
                     TextSpan(
                       text: tempDate.minute.toString(),
                       style: TextStyle(
                           color: (darkController.darkModeModel.isDarkMode)
-                              ? Color(0xff7a797c)
-                              : Color(0xffcacaca),
+                              ? const Color(0xff7a797c)
+                              : const Color(0xffcacaca),
                           fontSize: 1.3.h),
                     ),
                   ],

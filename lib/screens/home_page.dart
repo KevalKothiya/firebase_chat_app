@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+import 'dart:developer';
 import 'package:firebase_chat_app/controllers/dark_theme_gc.dart';
 import 'package:firebase_chat_app/helper/cloud_messaing_notification.dart';
 import 'package:firebase_chat_app/modals/global/drawer_menu.dart';
@@ -12,7 +14,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,16 +22,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   MenuItem currentItem = MenuItems.home;
   DarkMode_GetxController darkController = Get.put(DarkMode_GetxController());
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
     var androidInitializationSettings =
-    const AndroidInitializationSettings("mipmap/ic_launcher");
+        const AndroidInitializationSettings("mipmap/ic_launcher");
     var darwinInitializationSettings = const DarwinInitializationSettings();
     var initializationSettings = InitializationSettings(
         android: androidInitializationSettings,
@@ -39,9 +41,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
     CMFBHelper.flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print("+++++++++++++++++++");
-        print("PLAYLOAD: ${response.payload}");
-        print("+++++++++++++++++++");
+        log("+++++++++++++++++++");
+        log("PLAYLOAD: ${response.payload}");
+        log("+++++++++++++++++++");
       },
     );
   }
@@ -51,19 +53,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.inactive:
-        print('appLifeCycleState inactive');
+        log('appLifeCycleState inactive');
         break;
       case AppLifecycleState.resumed:
-        print('appLifeCycleState resumed');
+        log('appLifeCycleState resumed');
         break;
       case AppLifecycleState.paused:
-        print('appLifeCycleState paused');
+        log('appLifeCycleState paused');
         break;
       case AppLifecycleState.detached:
-        print('appLifeCycleState detached');
+        log('appLifeCycleState detached');
         break;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -98,15 +101,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   Widget getScreen() {
     switch (currentItem) {
       case MenuItems.home:
-        return MainScreen();
+        return const MainScreen();
       case MenuItems.setting:
-        return SettingPage();
+        return const SettingPage();
       case MenuItems.chat:
-        return SettingChatsFromMenuWidget();
+        return const SettingChatsFromMenuWidget();
       case MenuItems.profile:
-        return ProfilePage();
+        return const ProfilePage();
       default:
-        return HomePage();
+        return const HomePage();
     }
   }
 }

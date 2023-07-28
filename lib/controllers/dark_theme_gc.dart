@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:firebase_chat_app/modals/global/dark_theme.dart';
 import 'package:firebase_chat_app/modals/util/utils.dart';
 import 'package:flutter/material.dart';

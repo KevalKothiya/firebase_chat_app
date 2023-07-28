@@ -29,7 +29,7 @@ class _SettingPageState extends State<SettingPage> {
           backgroundColor: (darkController.darkModeModel.isDarkMode)
               ? CupertinoColors.black
               : CupertinoColors.systemGrey6,
-          leading: MenuWidget(),
+          leading: const MenuWidget(),
           largeTitle: Text(
             'Developer',
             style: TextStyle(
@@ -65,13 +65,13 @@ class _SettingPageState extends State<SettingPage> {
                               image: NetworkImage(
                                   userController.user_model.photoURl),
                               fit: BoxFit.cover,
-                              colorFilter: ColorFilter.mode(
+                              colorFilter: const ColorFilter.mode(
                                   Colors.red, BlendMode.colorBurn)),
                         ),
                       ),
                       placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                     ),
                     title: Text(
                       userController.user_model.displayName,
@@ -84,7 +84,7 @@ class _SettingPageState extends State<SettingPage> {
                     subtitle: Text(userController.user_model.about),
                     trailing: CircleAvatar(
                       radius: 4.w,
-                      child: Icon(CupertinoIcons.qrcode),
+                      child: const Icon(CupertinoIcons.qrcode),
                     ),
                   ),
                   SizedBox(
@@ -220,9 +220,7 @@ class _SettingPageState extends State<SettingPage> {
                           icon: CupertinoIcons.chat_bubble_2_fill,
                           context: "Chats",
                           onTap: (){
-                            print("tapped");
                             Get.toNamed('setting_chat_page');
-                            print("tapped2");
                           },
                         ),
                         container(
@@ -291,26 +289,24 @@ class _SettingPageState extends State<SettingPage> {
           SizedBox(
             width: 3.w,
           ),
-          Container(
-            child: Text(
-              context,
-              style: (darkController.darkModeModel.isDarkMode)
-                  ? TextStyle(
-                      color: CupertinoColors.white,
-                      fontSize: 3.5.w,
-                      decoration: TextDecoration.none,
-                    )
-                  : TextStyle(
-                      color: CupertinoColors.black,
-                      fontSize: 3.5.w,
-                      decoration: TextDecoration.none,
-                    ),
-            ),
+          Text(
+            context,
+            style: (darkController.darkModeModel.isDarkMode)
+                ? TextStyle(
+                    color: CupertinoColors.white,
+                    fontSize: 3.5.w,
+                    decoration: TextDecoration.none,
+                  )
+                : TextStyle(
+                    color: CupertinoColors.black,
+                    fontSize: 3.5.w,
+                    decoration: TextDecoration.none,
+                  ),
           ),
-          Spacer(),
+          const Spacer(),
           GestureDetector(
             onTap: onTap,
-            child: Icon(
+            child: const Icon(
               CupertinoIcons.forward,
               color: CupertinoColors.systemGrey,
             ),
